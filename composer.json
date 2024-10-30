@@ -1,0 +1,20 @@
+{
+    "name": "julianowte/api-bigdatacorp",
+    "description": "Simple package for connect api big data corp",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Julianowte\\ApiBigdatacorp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Juliano Soares",
+            "email": "juliano@wte.com.br"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
+    }
+}
