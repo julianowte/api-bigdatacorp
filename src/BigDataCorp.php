@@ -14,23 +14,26 @@ class BigDataCorp
 
     public function __construct(
         private Client $client = new Client
-    ) {
-        $this->authBigDataCorp($timeToExpire = 24);
-    }
+    ) {}
 
-    public function getCpfOrCnpj($str)
+    public function getCpfOrCnpj(string $str, string $_token = '', string $_token_id = ''): String
     {
         $str = preg_replace("/\D+/", '', $str);
         //cpf
         if (strlen($str) == 11) {
-            return $this->getCpf($str);
-        }
-        if (strlen($str) == 14) {
-            return $this->getCnpj($str);
+            return $this->getCpf($str, $_token, $_token_id);
+        } else if (strlen($str) == 14) {
+            return $this->getCnpj($str, $_token, $_token_id);
+        } else {
+            http_response_code(400);
+            return json_encode([
+                "data" => "",
+                "error" => "CNPJ ou CPF invalido."
+            ]);
         }
     }
 
-    public function getCpf($cpf)
+    public function getCpf(string $cpf, string $_token = '', string $_token_id = ''): String
     {
         $url = $this->BASE_ENDPOINT . "/pessoas";
         $dados = [
@@ -38,12 +41,15 @@ class BigDataCorp
             "Datasets" => "basic_data"
         ];
 
+        $token = ($this->TOKEN ?? $_token);
+        $token_id = ($this->TOKEN_ID ?? $_token_id);
+
         try {
             $res = $this->client->request('POST', $url, [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    "AccessToken" => $this->TOKEN,
-                    "TokenId" => $this->TOKEN_ID,
+                    "AccessToken" => $token,
+                    "TokenId" => $token_id,
                     "Accept" => 'application/json'
                 ],
                 'body' => json_encode($dados)
@@ -67,7 +73,7 @@ class BigDataCorp
         }
     }
 
-    public function getCnpj($cnpj)
+    public function getCnpj($cnpj, string $_token = '', string $_token_id = ''): String
     {
         $url = $this->BASE_ENDPOINT . "/empresas";
         $dados = [
@@ -75,12 +81,15 @@ class BigDataCorp
             "Datasets" => "basic_data"
         ];
 
+        $token = ($this->TOKEN ?? $_token);
+        $token_id = ($this->TOKEN_ID ?? $_token_id);
+
         try {
             $res = $this->client->request('POST', $url, [
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    "AccessToken" => $this->TOKEN,
-                    "TokenId" => $this->TOKEN_ID,
+                    "AccessToken" => $token,
+                    "TokenId" => $token_id,
                     "Accept" => 'application/json'
                 ],
                 'body' => json_encode($dados)
@@ -104,13 +113,13 @@ class BigDataCorp
         }
     }
 
-    public function authBigDataCorp($timeToExpire)
+    public function authBigDataCorp(array $auth)
     {
         $url = $this->BASE_ENDPOINT . "/tokens/gerar";
         $dados = [
-            "login" => BIGDATACORP_LOGIN,
-            "password" => BIGDATACORP_PASSWORD,
-            "expires" => $timeToExpire
+            "login" => $auth["login"],
+            "password" => $auth["password"],
+            "expires" => $auth["time_to_expire"]
         ];
 
         try {
@@ -125,6 +134,8 @@ class BigDataCorp
             $this->TOKEN = $res["token"];
             $this->TOKEN_ID = $res["tokenID"];
             return json_encode([
+                "token" => $res["token"],
+                "token_id" => $res["tokenID"],
                 "data" => $res,
                 "error" => []
             ]);
@@ -137,6 +148,8 @@ class BigDataCorp
             http_response_code(400);
             return json_encode([
                 "token" => "",
+                "token_id" => "",
+                "data" => "",
                 "error" => $error
             ]);
         }
