@@ -10,8 +10,8 @@ use Julianowte\ApiBigdatacorp\BigDataCorp;
 
 
 //ADD AQUI SUAS CREDENCIAIS DO BIGDATACORP
-$bigdatacorp_login = 'xxxx';
-$bigdatacorp_password = 'xxx';
+$bigdatacorp_login = '';
+$bigdatacorp_password = '';
 
 $timeToExpire = 24; //in hours to expire token;
 $dados_auth = [
