@@ -24,6 +24,7 @@ $result = $Bigdatacorp->authBigDataCorp($dados_auth);
 $result = json_decode($result, true);
 //var_dump($result);
 
+
 echo "<br><br>";
 //CONSULTA CPF/CNPJ
 //$cnpj_or_cpf = '19.505.135/0001-37';
