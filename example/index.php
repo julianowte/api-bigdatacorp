@@ -26,7 +26,8 @@ $result = json_decode($result, true);
 
 echo "<br><br>";
 //CONSULTA CPF/CNPJ
-//$cnpj_or_cpf = '19.505.135/0001-37';
+//$cnpj_or_cpf = '19.505.135/0001-37'; //cnpj padrao antigo (numerico)
+//$cnpj_or_cpf = '12.ABC.345/01DE-35'; //cnpj padrao novo (alfanumerico)
 $cnpj_or_cpf = '479.677.192-12';
 $cpf_result = $Bigdatacorp->getCpfOrCnpj($cnpj_or_cpf, $result["token"], $result["token_id"]);
 var_dump($cpf_result);

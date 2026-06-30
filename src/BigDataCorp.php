@@ -18,11 +18,11 @@ class BigDataCorp
 
     public function getCpfOrCnpj(string $str, string $_token = '', string $_token_id = ''): String
     {
-        $str = preg_replace("/\D+/", '', $str);
+        $str = strtoupper(preg_replace("/[^A-Za-z0-9]+/", '', $str));
         //cpf
-        if (strlen($str) == 11) {
+        if (strlen($str) == 11 && ctype_digit($str)) {
             return $this->getCpf($str, $_token, $_token_id);
-        } else if (strlen($str) == 14) {
+        } else if (strlen($str) == 14 && preg_match('/^[A-Z0-9]{12}\d{2}$/', $str)) {
             return $this->getCnpj($str, $_token, $_token_id);
         } else {
             http_response_code(400);
@@ -73,8 +73,9 @@ class BigDataCorp
         }
     }
 
-    public function getCnpj($cnpj, string $_token = '', string $_token_id = ''): String
+    public function getCnpj(string $cnpj, string $_token = '', string $_token_id = ''): String
     {
+        $cnpj = strtoupper(preg_replace("/[^A-Za-z0-9]+/", '', $cnpj));
         $url = $this->BASE_ENDPOINT . "/empresas";
         $dados = [
             "q" => "doc{" . $cnpj . "}",
